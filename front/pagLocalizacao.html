@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireWatch</title>
+    <link rel="stylesheet" href="pagLocalizacao.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+</head>
+<body>
+    <h1>Localização</h1>
+    <div id="itens">
+    <input type="text" id="rua" placeholder="informe a rua">
+    <input type="text" id="bairro" placeholder="informe o bairro">
+    </div>    
+
+    <div id="map"></div>
+
+    <div id="botao">
+    
+    <button id="searchButton">Enviar</button>
+    </div>
+
+
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script>
+
+// Define o ícone personalizado
+var fireIcon = L.icon({
+    iconUrl: '/img/image.png', // Caminho para a imagem
+    iconSize: [32, 32],       // Tamanho do ícone
+    iconAnchor: [16, 32],     // Posição do ponto do marcador no ícone
+    popupAnchor: [0, -32]     // Localização do popup relativo ao ícone
+});
+
+// Declarar variáveis globais
+var map;
+var marker;
+
+function success(pos) {
+    const { latitude, longitude } = pos.coords;
+
+    if (!map) {
+        // Inicializa o mapa apenas uma vez
+        map = L.map('map').setView([latitude, longitude], 13);
+
+        // Adiciona o tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Cria o marcador inicial com o ícone personalizado
+        marker = L.marker([latitude, longitude], { icon: fireIcon }).addTo(map)
+            .bindPopup('Você está aqui!')
+            .openPopup();
+    } else {
+        // Atualiza a posição do marcador
+        marker.setLatLng([latitude, longitude]);
+        map.setView([latitude, longitude], 13);
+    }
+}
+
+function error(err) {
+    console.error("Erro ao obter localização:", err);
+}
+
+// Rastreia a posição em tempo real
+navigator.geolocation.watchPosition(success, error, {
+    enableHighAccuracy: true,
+    timeout: 5000
+});
+    </script>
+</body>
+</html>
