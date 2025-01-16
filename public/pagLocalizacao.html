@@ -16,15 +16,16 @@
     </div>
     <h1>Localização</h1>
     <div id="itens">
-    <input type="text" id="rua" placeholder="informe a rua">
-    <input type="text" id="bairro" placeholder="informe o bairro">
+    <input type="text" id="cidade" placeholder="informe a cidade">
+    <input type="text" id="rua" placeholder="informe uma rua ou lugar">
+    <button id="searchButton">buscar</button>
     </div>    
 
     <div id="map"></div>
 
     <div id="botao">
     
-    <button id="searchButton">Enviar</button>
+    <button id="enviar">Enviar</button>
     </div>
 
 
@@ -37,7 +38,7 @@
 
 // Define o ícone personalizado
 var fireIcon = L.icon({
-    iconUrl: '/img/fogo.png', // Caminho para a imagem
+    iconUrl: '../img/fogo.png', // Caminho para a imagem
     iconSize: [32, 32],       // Tamanho do ícone
     iconAnchor: [16, 32],     // Posição do ponto do marcador no ícone
     popupAnchor: [0, -32]     // Localização do popup relativo ao ícone
@@ -46,9 +47,11 @@ var fireIcon = L.icon({
 // Declarar variáveis globais
 var map;
 var marker;
+let latitudeMarker, longitudemarker
 
 function success(pos) {
     const { latitude, longitude } = pos.coords;
+    
 
     if (!map) {
         // Inicializa o mapa apenas uma vez
@@ -63,6 +66,26 @@ function success(pos) {
         marker = L.marker([latitude, longitude], { icon: fireIcon }).addTo(map)
             .bindPopup('Você está aqui!')
             .openPopup();
+
+         map.on('click', e =>{
+            marker.setLatLng(e.latlng);
+            latitudeMarker = e.latlng.lat; //pegando a localização do click
+            longitudemarker = e.latlng.lng;
+            });
+        
+        document.getElementById('searchButton').addEventListener('click', ()=>{ //buscar a localizção dos inputs no mapaa
+            console.log(longitudemarker,latitudeMarker)
+            let lugar = document.getElementById('cidade').value +" "+document.getElementById('rua').value 
+            console.log(lugar)
+            fetch(`https://nominatim.openstreetmap.org/search?q=${lugar}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                let centro = [data[0].lat, data[0].lon];
+                map.panTo(centro);
+                })
+        })
+
+
     } else {
         // Atualiza a posição do marcador
         marker.setLatLng([latitude, longitude]);

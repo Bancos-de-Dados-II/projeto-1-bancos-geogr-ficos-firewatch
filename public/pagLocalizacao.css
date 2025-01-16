@@ -45,7 +45,7 @@ border-radius: 5%;
     flex-direction: column;
     align-items: center;
 }
-#searchButton{
+#searchButton,#enviar{
     background-color: #ef4f30;
     color: #ECECEC;
     border: none;
