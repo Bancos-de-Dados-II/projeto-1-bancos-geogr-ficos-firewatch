@@ -18,12 +18,12 @@ img{
     height: 150px;
     padding: 20px;
 }
-#cadastro{
+#cadastro, #login {
     background-color: #ECF1F3;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
     padding: 40px 20px;
 }
-#cadastro ,#imagem{
+#cadastro, #login, #imagem{
     margin: auto;
 
     width: 500px;
