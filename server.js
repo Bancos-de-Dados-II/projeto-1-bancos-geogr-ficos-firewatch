@@ -32,46 +32,47 @@ app.post('/cadastro', async (req, res) => {
 
 //Compara dados para login
 app.post('/login', async (req, res) => {
-  const { cpf, senha } = req.body;
+    const { cpf, senha } = req.body;
 
-  try {
-      const query = 'SELECT * FROM cadastros WHERE cpf = $1 AND senha = $2';
-      const result = await pool.query(query, [cpf, senha]);
+    try {
+        const query = 'SELECT nome, cpf FROM cadastros WHERE cpf = $1 AND senha = $2';
+        const result = await pool.query(query, [cpf, senha]);
 
-      if (result.rows.length > 0) {
-          res.status(200).send({ message: 'Login realizado com sucesso!' });
-      } else {
-          res.status(401).send({ message: 'CPF ou senha incorretos.' });
-      }
-  } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'Erro ao processar o login.' });
-  }
+        if (result.rows.length > 0) {
+            const { nome } = result.rows[0]; // Extrai o nome do banco
+            res.status(200).send({ message: 'Login realizado com sucesso!', nome, cpf });
+        } else {
+            res.status(401).send({ message: 'CPF ou senha incorretos.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: 'Erro ao processar o login.' });
+    }
 });
 
 // Rota para alertar incêndio
 app.post('/alertarIncendio', async (req, res) => {
-    const { descricao, gravidade, latitude, longitude, cidade, rua } = req.body;
+    const { descricao, gravidade, latitude, longitude, cidade, rua, cpf, nome } = req.body;
 
-    if (!descricao || !gravidade || !latitude || !longitude || !cidade || !rua) {
+    // Validação básica dos campos
+    if (!descricao || !gravidade || !latitude || !longitude || !cidade || !rua || !cpf || !nome) {
         return res.status(400).send({ message: 'Todos os campos obrigatórios devem ser preenchidos.' });
     }
 
-    console.log('Dados recebidos:', { descricao, gravidade, latitude, longitude, cidade, rua });
+    console.log('Dados recebidos:', { descricao, gravidade, latitude, longitude, cidade, rua, cpf, nome });
 
     try {
         const query = `
-            INSERT INTO incendios (descricao, gravidade, localizacao, cidade, rua)
-            VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5, $6)
+            INSERT INTO incendios (descricao, gravidade, localizacao, cidade, rua, cpf, nome)
+            VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326), $5, $6, $7, $8)
         `;
-        await pool.query(query, [descricao, gravidade, longitude, latitude, cidade, rua]);
+        await pool.query(query, [descricao, gravidade, longitude, latitude, cidade, rua, cpf, nome]);
         res.status(201).send({ message: 'Alerta de incêndio registrado com sucesso!' });
     } catch (error) {
         console.error('Erro ao salvar no banco:', error);
         res.status(500).send({ message: 'Erro ao registrar alerta de incêndio.' });
     }
 });
-
 
 
 // Rota para salvar localização

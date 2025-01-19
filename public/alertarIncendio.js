@@ -31,7 +31,11 @@ document.getElementById('alertForm').addEventListener('submit', async (e) => {
     const gravidade = document.getElementById('gravidade').value;
     const descricao = document.getElementById('descricao').value;
 
-    if (!latitude || !longitude || !gravidade || !descricao || !cidade || !rua) {
+    // Recupera o CPF e nome do usuário (supõe-se que foram armazenados no login)
+    const cpf = sessionStorage.getItem('cpf');
+    const nome = sessionStorage.getItem('nome');
+
+    if (!latitude || !longitude || !gravidade || !descricao || !cidade || !rua || !cpf || !nome) {
         alert('Por favor, preencha todos os campos obrigatórios.');
         return;
     }
@@ -40,7 +44,7 @@ document.getElementById('alertForm').addEventListener('submit', async (e) => {
         const response = await fetch('http://localhost:3000/alertarIncendio', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descricao, gravidade, latitude, longitude, cidade, rua }),
+            body: JSON.stringify({ descricao, gravidade, latitude, longitude, cidade, rua, cpf, nome }),
         });
 
         if (response.ok) {

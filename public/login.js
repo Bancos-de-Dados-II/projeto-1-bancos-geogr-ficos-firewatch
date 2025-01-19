@@ -20,8 +20,13 @@ async function submitLogin() {
         });
 
         if (response.ok) {
-            // Configura a sessão e redireciona para a página principal
+            const data = await response.json();
+
+            // Salve os dados do usuário no sessionStorage
             sessionStorage.setItem('isLoggedIn', true);
+            sessionStorage.setItem('cpf', data.cpf); // Salva o CPF
+            sessionStorage.setItem('nome', data.nome); // Salva o nome
+
             alert('Login realizado com sucesso!');
             window.location.href = 'http://localhost:3000/home.html';
         } else if (response.status === 401) {
