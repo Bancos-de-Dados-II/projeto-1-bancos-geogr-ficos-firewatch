@@ -1,0 +1,29 @@
+Tabela cadastros
+
+CREATE TABLE cadastros (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(11) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    senha VARCHAR(100) NOT NULL
+);
+
+
+Tabela incendios
+
+CREATE EXTENSION postgis;
+
+CREATE TABLE incendios (
+    id SERIAL PRIMARY KEY,
+    gravidade VARCHAR(50),
+    descricao TEXT,
+    cidade VARCHAR(100),
+    rua VARCHAR(100),
+    localizacao GEOGRAPHY(POINT, 4326),
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    nome VARCHAR(100),
+    cpf VARCHAR(14)
+);
+
+
+

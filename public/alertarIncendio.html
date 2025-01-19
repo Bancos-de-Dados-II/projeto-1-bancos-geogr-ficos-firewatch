@@ -9,7 +9,7 @@
 <body>
     <div id="container">
         <header>
-            <img id="logo" src="logo-cbmpb.png" alt="CBMPB">
+            <img id="logo" src="/img/cbmpb.png" alt="CBMPB">
         </header>
         <main>
             <h1>Alertar Incêndio</h1>
@@ -20,15 +20,12 @@
                     <option value="Moderado">Moderado</option>
                     <option value="Grave">Grave</option>
                 </select>
-
                 <label for="descricao">Descrição</label>
                 <textarea id="descricao" name="descricao" placeholder="Descreva o incêndio..." required></textarea>
-
                 <label for="localizacao">Localização</label>
-                <input type="text" id="localizacao" name="localizacao" placeholder="Clique para definir localização" readonly>
+                <input type="text" id="localizacao" name="localizacao" readonly>
                 <button type="button" id="localizacaoBtn" onclick="abrirLocalizacao()">Definir Localização</button>
-
-                <button type="submit" id="concluirBtn">Concluir</button>
+                <button type="submit">Enviar Alerta</button>
             </form>
         </main>
     </div>

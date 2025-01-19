@@ -102,21 +102,30 @@
             enableHighAccuracy: true,
             timeout: 5000
         });
-        
-        //salva as informações dno local storage
+
+        // Enviar informações ao servidor
         document.getElementById('enviar').addEventListener('click', () => {
-            if (latitudeMarker && longitudemarker) {
+            const cidade = document.getElementById('cidade').value;
+            const rua = document.getElementById('rua').value;
+
+            if (latitudeMarker && longitudemarker && cidade && rua) {
                 const coordenadas = {
                     latitude: latitudeMarker,
-                    longitude: longitudemarker
+                    longitude: longitudemarker,
+                    cidade,
+                    rua
                 };
+
+                console.log('Salvando coordenadas no localStorage:', coordenadas);
                 localStorage.setItem('coordenadas', JSON.stringify(coordenadas));
+
                 alert('Localização salva!');
-                window.location.href = 'alertarIncendio.html';
+                window.location.href = 'http://localhost:3000/alertarIncendio.html';
             } else {
-                alert('Por favor, selecione uma localização no mapa.');
+                alert('Por favor, preencha todos os campos e selecione uma localização no mapa.');
             }
         });
+
     </script>
 </body>
 

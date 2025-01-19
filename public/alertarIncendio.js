@@ -1,30 +1,57 @@
-// Abre a página de localização e armazena as coordenadas
+// Abrir a página de localização
 function abrirLocalizacao() {
-    window.location.href = 'http://localhost:3000/pagLocalizacao.html';
+    window.location.href = 'pagLocalizacao.html';
 }
 
-// Recupera a localização salva no localStorage
+
+
+
+// Recuperar a localização do localStorage
 window.addEventListener('load', () => {
     const coordenadas = localStorage.getItem('coordenadas');
     if (coordenadas) {
-        const { latitude, longitude } = JSON.parse(coordenadas);
-        document.getElementById('localizacao').value = `Lat: ${latitude}, Lon: ${longitude}`;
+        const { latitude, longitude, cidade, rua } = JSON.parse(coordenadas);
+        document.getElementById('localizacao').value = `Lat: ${latitude}, Lon: ${longitude}, ${rua}, ${cidade}`;
+    } else {
+        console.warn('Nenhuma localização encontrada.');
     }
 });
 
-// Validação e envio do formulário
-document.getElementById('alertForm').addEventListener('submit', (e) => {
+// Enviar o alerta para o servidor
+document.getElementById('alertForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const gravidade = document.getElementById('gravidade').value;
-    const descricao = document.getElementById('descricao').value;
-    const localizacao = document.getElementById('localizacao').value;
-
-    if (!gravidade || !descricao || !localizacao) {
-        alert('Por favor, preencha todos os campos.');
+    const coordenadas = localStorage.getItem('coordenadas');
+    if (!coordenadas) {
+        alert('Localização não registrada. Volte para a página de localização.');
         return;
     }
 
-    alert('Alerta de incêndio enviado com sucesso!');
-    // Aqui você pode enviar os dados para um servidor ou salvar em um banco de dados
+    const { latitude, longitude, cidade, rua } = JSON.parse(coordenadas);
+    const gravidade = document.getElementById('gravidade').value;
+    const descricao = document.getElementById('descricao').value;
+
+    if (!latitude || !longitude || !gravidade || !descricao || !cidade || !rua) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/alertarIncendio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ descricao, gravidade, latitude, longitude, cidade, rua }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert(data.message || 'Alerta enviado com sucesso!');
+            localStorage.removeItem('coordenadas'); // Limpar dados temporários
+        } else {
+            alert('Erro ao enviar o alerta. Tente novamente.');
+        }
+    } catch (error) {
+        console.error('Erro ao enviar alerta:', error);
+        alert('Erro de conexão com o servidor.');
+    }
 });
