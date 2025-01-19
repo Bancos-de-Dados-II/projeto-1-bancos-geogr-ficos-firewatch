@@ -1,0 +1,50 @@
+/* Estilo para a página home */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F2DFDF;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    text-align: center;
+}
+
+#cabecario {
+    background-color: #0E0F26;
+    padding: 10px;
+}
+
+#imgCabecario {
+    height: 50px;
+}
+
+h1 {
+    margin: 20px 0;
+    color: #ef4f30;
+}
+
+#map {
+    height: 70vh; /* Altura do mapa */
+    margin: 20px auto;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.buttons {
+    margin: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ef4f30;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #d14327;
+}

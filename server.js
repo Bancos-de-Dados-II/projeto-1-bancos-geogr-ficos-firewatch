@@ -97,7 +97,9 @@ app.post('/incendios', async (req, res) => {
 app.get('/api/incendios', async (req, res) => {
     try {
         const query = `
-            SELECT id, cidade, rua, descricao, gravidade, data_registro, nome, cpf
+            SELECT id, cidade, rua, descricao, gravidade, data_registro, nome, cpf,
+                   ST_X(localizacao::geometry) AS longitude,
+                   ST_Y(localizacao::geometry) AS latitude
             FROM incendios
         `;
         const { rows } = await pool.query(query);
@@ -107,6 +109,23 @@ app.get('/api/incendios', async (req, res) => {
         res.status(500).send({ message: 'Erro ao listar incêndios.' });
     }
 });
+
+// Mostrar no mapa incendios registrados
+/*app.get('/api/incendios', async (req, res) => {
+    try {
+        const query = `
+            SELECT id, descricao, cidade, rua, gravidade, data_registro,
+                   ST_X(localizacao::geometry) AS longitude,
+                   ST_Y(localizacao::geometry) AS latitude
+            FROM incendios
+        `;
+        const { rows } = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao listar incêndios:', error);
+        res.status(500).send({ message: 'Erro ao listar incêndios.' });
+    }
+});*/
 
 // Obter detalhes de um incêndio por ID
 app.get('/api/incendios/:id', async (req, res) => {
