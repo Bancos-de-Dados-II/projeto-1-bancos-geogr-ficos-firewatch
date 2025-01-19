@@ -10,13 +10,17 @@ async function carregarIncendios() {
             const box = document.createElement('div');
             box.classList.add('box');
 
+            // Exibição breve com cidade, rua, data e gravidade
             box.innerHTML = `
-                <p><strong>Descrição:</strong> ${incendio.descricao}</p>
                 <p><strong>Cidade:</strong> ${incendio.cidade}</p>
                 <p><strong>Rua:</strong> ${incendio.rua}</p>
-                <button onclick="verDetalhes(${incendio.id})">🔍 Ver Detalhes</button>
-                <button onclick="editarIncendio(${incendio.id})">✏️ Editar</button>
-                <button onclick="excluirIncendio(${incendio.id})">🗑️ Excluir</button>
+                <p><strong>Data:</strong> ${new Date(incendio.data_registro).toLocaleString()}</p>
+                <p><strong>Gravidade:</strong> ${incendio.gravidade}</p>
+                <div class="actions">
+                    <button class="btn-detalhes" onclick="verDetalhes(${incendio.id})" title="Ver Detalhes">🔍</button>
+                    <button class="btn-editar" onclick="editarIncendio(${incendio.id})" title="Editar Incêndio">✏️</button>
+                    <button class="btn-excluir" onclick="excluirIncendio(${incendio.id})" title="Excluir Incêndio">🗑️</button>
+                </div>
             `;
 
             listaIncendios.appendChild(box);
@@ -31,6 +35,7 @@ async function verDetalhes(id) {
         const resposta = await fetch(`/api/incendios/${id}`);
         const incendio = await resposta.json();
 
+        // Exibir informações detalhadas
         alert(`
             Nome: ${incendio.nome}
             CPF: ${incendio.cpf}
@@ -44,6 +49,7 @@ async function verDetalhes(id) {
 }
 
 function editarIncendio(id) {
+    // Redirecionar para a página de edição com o ID do incêndio
     window.location.href = `alertarIncendio.html?id=${id}`;
 }
 
@@ -53,11 +59,12 @@ async function excluirIncendio(id) {
         try {
             await fetch(`/api/incendios/${id}`, { method: 'DELETE' });
             alert('Incêndio excluído com sucesso!');
-            carregarIncendios();
+            carregarIncendios(); // Atualizar a lista após exclusão
         } catch (error) {
             console.error('Erro ao excluir incêndio:', error);
         }
     }
 }
 
+// Carregar incêndios ao carregar a página
 document.addEventListener('DOMContentLoaded', carregarIncendios);

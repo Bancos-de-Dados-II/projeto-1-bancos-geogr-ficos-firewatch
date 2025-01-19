@@ -15,7 +15,7 @@ const pool = new Pool({
 app.use(bodyParser.json());
 app.use(express.static('public')); // Servir arquivos estáticos
 
-//Salva dados do cadastro
+//Salvar dados do cadastro
 app.post('/cadastro', async (req, res) => {
   const { nome, cpf, email, senha } = req.body;
 
@@ -30,7 +30,7 @@ app.post('/cadastro', async (req, res) => {
 });
 
 
-//Compara dados para login
+//Comparar dados para login
 app.post('/login', async (req, res) => {
     const { cpf, senha } = req.body;
 
@@ -50,7 +50,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Rota para alertar incêndio
+// Alertar incêndio
 app.post('/alertarIncendio', async (req, res) => {
     const { descricao, gravidade, latitude, longitude, cidade, rua, cpf, nome } = req.body;
 
@@ -75,7 +75,7 @@ app.post('/alertarIncendio', async (req, res) => {
 });
 
 
-// Rota para salvar localização
+// Salvar localização
 app.post('/incendios', async (req, res) => {
   const { cidade, rua, latitude, longitude } = req.body;
 
@@ -95,34 +95,42 @@ app.post('/incendios', async (req, res) => {
 
 // Listar todos os incêndios
 app.get('/api/incendios', async (req, res) => {
-  try {
-      const { rows } = await pool.query('SELECT * FROM incendios');
-      res.status(200).json(rows);
-  } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'Erro ao listar incêndios' });
-  }
+    try {
+        const query = `
+            SELECT id, cidade, rua, descricao, gravidade, data_registro, nome, cpf
+            FROM incendios
+        `;
+        const { rows } = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao listar incêndios:', error);
+        res.status(500).send({ message: 'Erro ao listar incêndios.' });
+    }
 });
 
 // Obter detalhes de um incêndio por ID
 app.get('/api/incendios/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-      const { rows } = await pool.query(
-          'SELECT i.*, c.nome, c.cpf FROM incendios i JOIN cadastros c ON i.cadastro_id = c.id WHERE i.id = $1',
-          [id]
-      );
+    const { id } = req.params;
 
-      if (rows.length === 0) {
-          return res.status(404).send({ message: 'Incêndio não encontrado' });
-      }
+    try {
+        const query = `
+            SELECT cidade, rua, descricao, gravidade, data_registro, nome, cpf
+            FROM incendios
+            WHERE id = $1
+        `;
+        const { rows } = await pool.query(query, [id]);
 
-      res.status(200).json(rows[0]);
-  } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'Erro ao buscar detalhes do incêndio' });
-  }
+        if (rows.length === 0) {
+            return res.status(404).send({ message: 'Incêndio não encontrado.' });
+        }
+
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        console.error('Erro ao buscar detalhes do incêndio:', error);
+        res.status(500).send({ message: 'Erro ao buscar detalhes do incêndio.' });
+    }
 });
+
 
 // Adicionar um novo incêndio
 app.post('/api/incendios', async (req, res) => {
@@ -162,19 +170,23 @@ app.put('/api/incendios/:id', async (req, res) => {
 
 // Excluir um incêndio
 app.delete('/api/incendios/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-      const result = await pool.query('DELETE FROM incendios WHERE id = $1', [id]);
-      if (result.rowCount === 0) {
-          return res.status(404).send({ message: 'Incêndio não encontrado' });
-      }
+    const { id } = req.params;
 
-      res.send({ message: 'Incêndio excluído com sucesso!' });
-  } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'Erro ao excluir incêndio' });
-  }
+    try {
+        const query = 'DELETE FROM incendios WHERE id = $1';
+        const result = await pool.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).send({ message: 'Incêndio não encontrado.' });
+        }
+
+        res.send({ message: 'Incêndio excluído com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao excluir incêndio:', error);
+        res.status(500).send({ message: 'Erro ao excluir incêndio.' });
+    }
 });
+
 
 
 app.listen(3000, () => {

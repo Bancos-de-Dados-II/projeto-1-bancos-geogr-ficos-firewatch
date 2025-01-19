@@ -36,7 +36,7 @@ document.getElementById('alertForm').addEventListener('submit', async (e) => {
     const nome = sessionStorage.getItem('nome');
 
     if (!latitude || !longitude || !gravidade || !descricao || !cidade || !rua || !cpf || !nome) {
-        alert('Por favor, preencha todos os campos obrigatórios.');
+        alert('Por favor, preencha todos os campos obrigatórios ou certifique-se de que está logado.');
         return;
     }
 
