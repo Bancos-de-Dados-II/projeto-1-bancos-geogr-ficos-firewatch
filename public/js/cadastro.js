@@ -114,10 +114,10 @@ async function submitCadastro() {
     const jsonData = { nome, cpf, email, senha };
 
     try {
-        const response = await fetch('/cadastro', {
+        const response = await fetch('http://localhost:3000/cadastro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(jsonData),
+            body: JSON.stringify(jsonData), 
         });
 
         if (response.ok) {
