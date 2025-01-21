@@ -7,8 +7,22 @@ body{
 
 }
 #cabecario{
-    height: 110px;
+
     background-color: #0E0F26;
+    display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 10px; 
+
+}
+#cabecario>img{
+    padding: 0px;
+}
+#cabecario>a{
+    color: #ECECEC;
+    font-size: large;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
 
 }
 #imgCabecario{
@@ -23,10 +37,10 @@ img{
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
     padding: 40px 20px;
 }
-#cadastro, #login, #imagem{
+#cadastro, #login, #imagem, form{
     margin: auto;
 
-    width: 500px;
+    max-width: 500px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
@@ -42,6 +56,7 @@ input, #gravidade{
 
 
 }
+
 button{
     background-color: #ef4f30;
     color: #ECECEC;
@@ -55,8 +70,9 @@ button{
    
     
 }
-a{text-decoration: none;
-color:#0E0F26;
+a{
+    text-decoration: none;
+    color:#0E0F26;
 }
 
 .span-required {
@@ -64,4 +80,47 @@ color:#0E0F26;
     font-size: 12px;
     color: red;
     margin: 3px 0 0 2px;
+}
+
+@media(max-width:768px) {
+    #imgCabecario{
+        height: 40px;
+        
+        
+      }
+      #imagem{
+        width: 100%;
+      }
+      
+    h1{
+       font-size: 26px; 
+    }
+    #cadastro {
+        width: 500px;
+
+    }
+    button{
+
+        width: 150px;
+    }
+
+    @media (max-width:540px) {
+        img{
+            height: 120px;
+        }
+        #cadastro{
+            width: 85%;
+            padding: 15px 0px;
+        }
+        
+        h1{
+            font-size: 20px; 
+         }
+         button{
+
+            width: 150px;
+            font-size: 16px;
+        }
+    }
+    
 }

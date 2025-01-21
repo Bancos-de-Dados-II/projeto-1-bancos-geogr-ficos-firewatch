@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alertar Incêndio</title>
-    <link rel="stylesheet" href="alertarIncendio.css">
+    <link rel="stylesheet" href="./css/alertarIncendio.css">
+    <link rel="shortcut icon" href="./img/favicon_io/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="container">
-        <header>
-            <img id="logo" src="./img/cbmpb.png" alt="CBMPB">
+        <header id="cabecario">
+                <img id="imgCabecario" src="./img/cbmpb.png" alt="cbmpb">
+                <a href="http://localhost:3000/home.html">Home</a>
         </header>
         <main>
+            <img id="logo" src="./img/image.png" alt="CBMPB">
             <h1>Alertar Incêndio</h1>
             <form id="alertForm">
                 <label for="gravidade">Gravidade</label>
@@ -24,9 +27,11 @@
                 <textarea id="descricao" name="descricao" placeholder="Descreva o incêndio..." required></textarea>
                 <label for="localizacao">Localização</label>
                 <input type="text" id="localizacao" name="localizacao" readonly>
-                <button type="button" id="localizacaoBtn" onclick="abrirLocalizacao()">Definir Localização</button>
-                <button type="submit">Enviar Alerta</button>
-                <button onclick="window.location.href='login.html'">Login</button>
+                <div id="botoes">
+                    <button type="button" id="localizacaoBtn" onclick="abrirLocalizacao()">Definir Localização</button>
+                    <button type="submit">Enviar Alerta</button>
+                    <button onclick="window.location.href='login.html'">Login</button>
+                </div>
             </form>
         </main>
     </div>
