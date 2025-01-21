@@ -15,11 +15,12 @@ body {
       padding: 20px 10px; 
 
 }
-#cabecario>a{
+#cabecario>div>a{
     color: #ECECEC;
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
     text-decoration: none;
+    margin: 5px;
 }
 #imgCabecario{
     height: 55px;

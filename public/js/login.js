@@ -39,3 +39,13 @@ async function submitLogin() {
         alert('Erro de conexão. Tente novamente.');
     }
 }
+
+window.addEventListener("load",() => {
+    
+
+window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+    history.go(1);
+
+    }
+})

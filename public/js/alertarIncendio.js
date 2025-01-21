@@ -50,6 +50,8 @@ document.getElementById('alertForm').addEventListener('submit', async (e) => {
         if (response.ok) {
             const data = await response.json();
             alert(data.message || 'Alerta enviado com sucesso!');
+            window.location.href = 'http://localhost:3000/home.html';
+            
             localStorage.removeItem('coordenadas'); // Limpar dados temporários
         } else {
             alert('Erro ao enviar o alerta. Tente novamente.');

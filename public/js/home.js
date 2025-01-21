@@ -43,13 +43,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Simples validação de login
 document.addEventListener('DOMContentLoaded', () => {
     const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-    if (!isLoggedIn) {
+    console.log(isLoggedIn)
+    if (!isLoggedIn || isLoggedIn == "false") {
+        console.log("entrei if")
         alert('Você precisa estar logado para acessar esta página.');
         window.location.href = 'http://localhost:3000/login.html';
     }
 });
 
+botaoLogout = document.querySelector("#logout")
+botaoLogout.addEventListener("click",()=> logout())
+
 function logout() {
-    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.setItem('isLoggedIn', false);
     window.location.href = 'http://localhost:3000/login.html';
 }
