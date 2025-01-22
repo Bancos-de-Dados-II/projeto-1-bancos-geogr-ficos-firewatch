@@ -38,13 +38,28 @@ function nomeValidate() {
     }
 }
 
+// Remove caracteres não numéricos do CPF
+function formatarCPF(cpf) {
+    return cpf.replace(/\D+/g, '');
+}
+
 // Valida o CPF
-function cpfValidate() {
+async function cpfValidate() {
     const cpfInput = document.querySelector('#cpf');
-    if (!cpfRegex.test(cpfInput.value)) {
-        setError(1);
-    } else {
-        removeError(1);
+    const cpf = formatarCPF(cpfInput.value); // Limpa o CPF antes de enviar
+
+    try {
+        const response = await fetch(`http://localhost:3000/validarCPF?cpf=${cpf}`);
+        const { valido } = await response.json();
+
+        if (!valido) {
+            setError(1); // Aplica o erro se o CPF for inválido
+        } else {
+            removeError(1); // Remove o erro se o CPF for válido
+        }
+    } catch (error) {
+        console.error('Erro ao validar CPF:', error);
+        setError(1); // Mostra erro em caso de falha na comunicação com o servidor
     }
 }
 
@@ -87,7 +102,7 @@ function validateForm() {
 
     // Verifica todas as validações
     if (document.querySelector('#nome').value.length < 3) setError(0), isValid = false;
-    if (!cpfRegex.test(document.querySelector('#cpf').value)) setError(1), isValid = false;
+    if (spans[1].style.display === 'block') isValid = false; // Verifica se o CPF foi validado
     if (!emailRegex.test(document.querySelector('#email').value)) setError(2), isValid = false;
 
     const senha = document.querySelector('#password').value;
@@ -107,7 +122,7 @@ async function submitCadastro() {
     }
 
     const nome = document.querySelector('#nome').value;
-    const cpf = document.querySelector('#cpf').value;
+    const cpf = formatarCPF(document.querySelector('#cpf').value); // Envia CPF limpo
     const email = document.querySelector('#email').value;
     const senha = document.querySelector('#password').value;
 
@@ -117,14 +132,15 @@ async function submitCadastro() {
         const response = await fetch('http://localhost:3000/cadastro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(jsonData), 
+            body: JSON.stringify(jsonData),
         });
 
         if (response.ok) {
             alert('Usuário cadastrado com sucesso!');
             window.location.replace('http://localhost:3000/home.html');
         } else {
-            alert('Erro ao cadastrar usuário.');
+            const errorData = await response.json();
+            alert(errorData.message || 'Erro ao cadastrar usuário.');
         }
     } catch (error) {
         console.error('Erro na requisição:', error);

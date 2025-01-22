@@ -1,7 +1,14 @@
+// Remove caracteres não numéricos do CPF
+function formatarCPF(cpf) {
+    return cpf.replace(/\D+/g, ''); // Remove tudo que não é número
+}
+
 async function submitLogin() {
     console.log("Botão foi clicado"); // Log para depuração
 
-    const cpf = document.getElementById('cpfLogin').value;
+    // Formatar o CPF para remover pontuações antes de enviar
+    const cpfInput = document.getElementById('cpfLogin').value;
+    const cpf = formatarCPF(cpfInput); // Limpa o CPF
     const senha = document.getElementById('passwordLogin').value;
 
     // Verificação simples para evitar envio de campos vazios
@@ -40,12 +47,9 @@ async function submitLogin() {
     }
 }
 
-window.addEventListener("load",() => {
-    
-
-window.history.pushState(null, "", window.location.href);
-window.onpopstate = function () {
-    history.go(1);
-
-    }
-})
+window.addEventListener("load", () => {
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+});
