@@ -248,26 +248,6 @@ app.post('/api/incendios', async (req, res) => {
   }
 });
 
-// Atualizar um incêndio
-app.put('/api/incendios/:id', async (req, res) => {
-  const { id } = req.params;
-  const { descricao, cidade, rua } = req.body;
-  try {
-      const result = await pool.query(
-          'UPDATE incendios SET descricao = $1, cidade = $2, rua = $3 WHERE id = $4',
-          [descricao, cidade, rua, id]
-      );
-
-      if (result.rowCount === 0) {
-          return res.status(404).send({ message: 'Incêndio não encontrado' });
-      }
-
-      res.send({ message: 'Incêndio atualizado com sucesso!' });
-  } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: 'Erro ao atualizar incêndio' });
-  }
-});
 
 // Excluir um incêndio
 app.delete('/api/incendios/:id', async (req, res) => {
