@@ -1,44 +1,65 @@
-async function carregarIncendioParaEditar() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    if (id) {
-        try {
-            const resposta = await fetch(`/api/incendios/${id}`);
-            const incendio = await resposta.json();
-
-            document.getElementById('descricao').value = incendio.descricao;
-            document.getElementById('cidade').value = incendio.cidade;
-            document.getElementById('rua').value = incendio.rua;
-        } catch (error) {
-            console.error('Erro ao carregar incêndio para edição:', error);
-        }
-    }
-}
-
-async function salvarIncendio() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    const descricao = document.getElementById('descricao').value;
-    const cidade = document.getElementById('cidade').value;
-    const rua = document.getElementById('rua').value;
-
+async function carregarIncendiosDoUsuario() {
     try {
-        const metodo = id ? 'PUT' : 'POST';
-        const url = id ? `/api/incendios/${id}` : '/api/incendios';
+        // Recupera o CPF do usuário logado
+        const cpf = sessionStorage.getItem('cpf');
+        if (!cpf) {
+            alert('Erro: Usuário não está autenticado.');
+            window.location.href = 'login.html';
+            return;
+        }
 
-        await fetch(url, {
-            method: metodo,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ descricao, cidade, rua }),
+        // Requisição para obter os incêndios registrados pelo usuário
+        const resposta = await fetch(`/api/minhaAjuda?cpf=${cpf}`);
+        const incendios = await resposta.json();
+
+        const listaIncendios = document.getElementById('listaIncendios');
+        listaIncendios.innerHTML = '';
+
+        incendios.forEach((incendio) => {
+            const box = document.createElement('div');
+            box.classList.add('box');
+
+            // Exibição breve com cidade, rua, data e gravidade
+            box.innerHTML = `
+                <p><strong>Cidade:</strong> ${incendio.cidade}</p>
+                <p><strong>Rua:</strong> ${incendio.rua}</p>
+                <p><strong>Data:</strong> ${new Date(incendio.data_registro).toLocaleString()}</p>
+                <p><strong>Gravidade:</strong> ${incendio.gravidade}</p>
+                <div class="actions">
+                    <button class="btn-detalhes" onclick="verDetalhes(${incendio.id})" title="Ver Detalhes">🔍</button>
+                    <button class="btn-editar" onclick="editarIncendio(${incendio.id})" title="Editar Incêndio">✏️</button>
+                </div>
+            `;
+
+            listaIncendios.appendChild(box);
         });
-
-        alert('Incêndio salvo com sucesso!');
-        window.location.href = 'minhaAjuda.html';
     } catch (error) {
-        console.error('Erro ao salvar incêndio:', error);
+        console.error('Erro ao carregar incêndios do usuário:', error);
     }
 }
 
-document.addEventListener('DOMContentLoaded', carregarIncendioParaEditar);
+async function verDetalhes(id) {
+    try {
+        const resposta = await fetch(`/api/incendios/${id}`);
+        const incendio = await resposta.json();
+
+        // Exibir informações detalhadas
+        alert(`
+            Nome: ${incendio.nome}
+            CPF: ${incendio.cpf}
+            Cidade: ${incendio.cidade}
+            Rua: ${incendio.rua}
+            Descrição: ${incendio.descricao}
+        `);
+    } catch (error) {
+        console.error('Erro ao obter detalhes do incêndio:', error);
+    }
+}
+
+function editarIncendio(id) {
+    // Redirecionar para a página de edição com o ID do incêndio
+    window.location.href = `alertarIncendio.html?id=${id}`;
+}
+
+// Carregar incêndios ao carregar a página
+document.addEventListener('DOMContentLoaded', carregarIncendiosDoUsuario);

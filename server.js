@@ -50,6 +50,27 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.get('/api/minhaAjuda', async (req, res) => {
+    const { cpf } = req.query;
+
+    if (!cpf) {
+        return res.status(400).send({ message: 'CPF do usuário é obrigatório.' });
+    }
+
+    try {
+        const query = `
+            SELECT id, cidade, rua, descricao, gravidade, data_registro
+            FROM incendios
+            WHERE cpf = $1
+        `;
+        const { rows } = await pool.query(query, [cpf]);
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao listar incêndios do usuário:', error);
+        res.status(500).send({ message: 'Erro ao listar incêndios do usuário.' });
+    }
+});
+
 // Alertar incêndio
 app.post('/alertarIncendio', async (req, res) => {
     const { descricao, gravidade, latitude, longitude, cidade, rua, cpf, nome } = req.body;
@@ -110,22 +131,7 @@ app.get('/api/incendios', async (req, res) => {
     }
 });
 
-// Mostrar no mapa incendios registrados
-/*app.get('/api/incendios', async (req, res) => {
-    try {
-        const query = `
-            SELECT id, descricao, cidade, rua, gravidade, data_registro,
-                   ST_X(localizacao::geometry) AS longitude,
-                   ST_Y(localizacao::geometry) AS latitude
-            FROM incendios
-        `;
-        const { rows } = await pool.query(query);
-        res.status(200).json(rows);
-    } catch (error) {
-        console.error('Erro ao listar incêndios:', error);
-        res.status(500).send({ message: 'Erro ao listar incêndios.' });
-    }
-});*/
+
 
 // Obter detalhes de um incêndio por ID
 app.get('/api/incendios/:id', async (req, res) => {
