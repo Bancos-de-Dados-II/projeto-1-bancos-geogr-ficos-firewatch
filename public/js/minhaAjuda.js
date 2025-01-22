@@ -57,8 +57,21 @@ async function verDetalhes(id) {
 }
 
 function editarIncendio(id) {
-    // Redirecionar para a página de edição com o ID do incêndio
+    excluirIncendio(id);
     window.location.href = `alertarIncendio.html?id=${id}`;
+}
+
+async function excluirIncendio(id) {
+    const confirmacao = confirm('Deseja realmente excluir este incêndio?');
+    if (confirmacao) {
+        try {
+            await fetch(`/api/incendios/${id}`, { method: 'DELETE' });
+            alert('Incêndio excluído com sucesso!');
+            carregarIncendios(); // Atualizar a lista após exclusão
+        } catch (error) {
+            console.error('Erro ao excluir incêndio:', error);
+        }
+    }
 }
 
 // Carregar incêndios ao carregar a página

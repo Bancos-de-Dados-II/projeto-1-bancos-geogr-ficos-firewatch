@@ -49,7 +49,8 @@ async function verDetalhes(id) {
 }
 
 function editarIncendio(id) {
-    // Redirecionar para a página de edição com o ID do incêndio
+
+    excluirIncendio(id);
     window.location.href = `alertarIncendio.html?id=${id}`;
 }
 
